@@ -41,7 +41,7 @@ class PessoaController {
             const { id } = req.params;
             const atualizarPessoa = req.body;
             await database.Pessoas.update(atualizarPessoa, { where: { id } });
-            const pessoa = await database.Pessoas.findOne({where: { id }});
+            const pessoa = await database.Pessoas.findOne({ where: { id } });
             return res.status(200).json(pessoa);
 
         } catch (e) {
@@ -59,6 +59,59 @@ class PessoaController {
             return res.status(500).json(e.message)
         }
     }
+
+    //matriculas
+    static async findMatricula(req, res) {
+        try {
+            const { estudanteId, matriculaId } = req.params;
+
+            const matricula = await database.Matriculas.findOne({ where: { id: Number(matriculaId), estudante_id: Number(estudanteId) } });
+
+            return res.status(200).json(matricula);
+
+        } catch (e) {
+            return res.status(500).json(e.message)
+        }
+    }
+
+    static async createMatricula(req, res) {
+        try {
+            const { estudanteId } = req.params;
+            const novaMatricula = { ...req.body, estudante_id: estudanteId };
+            const matricula = await database.Matriculas.create(novaMatricula);
+            return res.status(200).json(matricula);
+
+        } catch (e) {
+            return res.status(500).json(e.message)
+        }
+    }
+
+    static async updateMatricula(req, res) {
+        try {
+            const { matriculaId } = req.params;
+            const atualizaMatricula = req.body;
+            await database.Matriculas.update(atualizaMatricula, { where: { id: matriculaId } });
+            const matricula = await database.Matriculas.findOne({ where: { id: matriculaId } });
+            return res.status(200).json(matricula);
+
+        } catch (e) {
+            return res.status(500).json(e.message)
+        }
+    }
+
+    static async deleteMatricula(req, res) {
+        try {
+            const { matriculaId } = req.params;
+            const matricula = await database.Matriculas.findOne({ where: { id: matriculaId } });
+            await database.Matriculas.destroy({ where: { id: Number(matriculaId) } });
+            return res.status(200).json(matricula);
+
+        } catch (e) {
+            return res.status(500).json(e.message)
+        }
+    }
+
+
 
 }
 
